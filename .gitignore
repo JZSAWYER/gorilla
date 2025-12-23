@@ -39,6 +39,9 @@ berkeley-function-call-leaderboard/bfcl_eval/scripts/ground_truth_conversation/
 # Ignore lock files
 berkeley-function-call-leaderboard/**/*.lock
 
+# Ignore machine-specific config files
+berkeley-function-call-leaderboard/bfcl_eval/data/config.local.sh
+
 .direnv/
 .venv
 
