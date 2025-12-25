@@ -29,8 +29,7 @@ python build_rl_trajectories.py \
   --expert_model_path "${MODEL_ROOT_PATH}/Qwen2.5-7B-Instruct" \
   --intermediate_model_path "${MODEL_ROOT_PATH}/Qwen2.5-1.5B-Instruct" \
   --weak_model_path "${MODEL_ROOT_PATH}/Qwen2.5-0.5B-Instruct" \
-  --test_mode \
-  --samples_per_api_file 3
+  --trajectories_per_sample 2
 
 # Generate for a specific API with n samples:
 # python build_rl_trajectories.py \

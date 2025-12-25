@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Import the environment for executing tool calls
@@ -245,6 +246,7 @@ class ModelGenerator:
         Parse model output to extract tool calls.
         
         Handles multiple formats:
+        - OpenAI-style: <tool_call>{"name": "cd", "arguments": {...}}</tool_call>
         - Python-style: cd(folder='temp')
         - JSON blocks: ```json\n{"name": "cd", "arguments": {...}}\n```
         - List format: [cd(folder='temp'), mv(...)]
@@ -256,6 +258,38 @@ class ModelGenerator:
             List of tool call strings in Python format
         """
         tool_calls = []
+        
+        # Try to extract OpenAI-style <tool_call> tags first
+        tool_call_pattern = r'<tool_call>\s*(\{.*?\})\s*</tool_call>'
+        tool_call_matches = re.findall(tool_call_pattern, output, re.DOTALL)
+        if tool_call_matches:
+            for match in tool_call_matches:
+                try:
+                    parsed = json.loads(match)
+                    if isinstance(parsed, dict) and "name" in parsed:
+                        tool_call = self._json_to_python_call(parsed)
+                        if tool_call:
+                            tool_calls.append(tool_call)
+                except json.JSONDecodeError:
+                    # Try to clean up the JSON (remove trailing ellipsis, etc.)
+                    cleaned_match = match.strip()
+                    if cleaned_match.endswith('...'):
+                        cleaned_match = cleaned_match[:-3].strip()
+                        # Try to close any open braces
+                        open_braces = cleaned_match.count('{') - cleaned_match.count('}')
+                        if open_braces > 0:
+                            cleaned_match += '}' * open_braces
+                        try:
+                            parsed = json.loads(cleaned_match)
+                            if isinstance(parsed, dict) and "name" in parsed:
+                                tool_call = self._json_to_python_call(parsed)
+                                if tool_call:
+                                    tool_calls.append(tool_call)
+                        except json.JSONDecodeError:
+                            pass
+        
+        if tool_calls:
+            return tool_calls
         
         # Try to extract JSON code blocks first (```json ... ```)
         json_pattern = r'```json\s*(\[.*?\]|\{.*?\})\s*```'
@@ -280,19 +314,31 @@ class ModelGenerator:
         if tool_calls:
             return tool_calls
         
-        # Try to extract JSON without code blocks
-        json_pattern2 = r'\{[^{}]*"name"[^{}]*"arguments"[^{}]*\}'
-        json_matches2 = re.findall(json_pattern2, output)
-        if json_matches2:
-            for match in json_matches2:
-                try:
-                    parsed = json.loads(match)
-                    if "name" in parsed:
-                        tool_call = self._json_to_python_call(parsed)
-                        if tool_call:
-                            tool_calls.append(tool_call)
-                except json.JSONDecodeError:
-                    pass
+        # Try to extract JSON without code blocks (handle nested JSON properly)
+        # Find positions where JSON objects might start
+        json_starts = [i for i, char in enumerate(output) if char == '{']
+        for start_pos in json_starts:
+            # Try to find a valid JSON object starting from this position
+            depth = 0
+            for end_pos in range(start_pos, len(output)):
+                if output[end_pos] == '{':
+                    depth += 1
+                elif output[end_pos] == '}':
+                    depth -= 1
+                    if depth == 0:
+                        # Found a complete JSON object
+                        candidate = output[start_pos:end_pos+1]
+                        # Check if it looks like a tool call (has "name" and "arguments")
+                        if '"name"' in candidate and '"arguments"' in candidate:
+                            try:
+                                parsed = json.loads(candidate)
+                                if isinstance(parsed, dict) and "name" in parsed:
+                                    tool_call = self._json_to_python_call(parsed)
+                                    if tool_call and tool_call not in tool_calls:
+                                        tool_calls.append(tool_call)
+                            except json.JSONDecodeError:
+                                pass
+                        break
         
         if tool_calls:
             return tool_calls
@@ -775,7 +821,7 @@ class TrajectoryBuilder:
                 
                 if not tool_calls:
                     logger.warning(f"No tool calls generated for {obj_id} turn {turn_idx + 1}")
-                    logger.debug(f"Generated text: {generated_text[:200]}...")  # Log first 200 chars
+                    logger.debug(f"Generated text: {generated_text[:512]}...")  # Log first 200 chars
                     # Add empty response
                     conversations.append({
                         "from": "gpt",
@@ -1146,10 +1192,32 @@ def main():
         "--samples_per_api_file",
         type=int,
         default=2,
-        help="Number of samples per API per file in test mode (default: 2). Final size = num_apis × samples_per_api_file × 4 files"
+        help="[Test mode only] Number of samples per API per file (default: 2). Final size = num_apis × samples_per_api_file × 4 files"
+    )
+    parser.add_argument(
+        "--trajectories_per_sample",
+        type=int,
+        default=1,
+        help="[Full mode only] Number of trajectories to generate per sample (default: 1). Use >1 to generate diverse trajectories for the same input."
     )
     
     args = parser.parse_args()
+    
+    # Validate argument combinations
+    if not args.test_mode:
+        # Full mode: --samples_per_api_file and --test_api should not be used
+        if args.samples_per_api_file != 2:  # 2 is the default
+            logger.warning("--samples_per_api_file is only used in test mode (--test_mode). Ignoring.")
+        if args.test_api is not None:
+            logger.warning("--test_api is only used in test mode (--test_mode). Ignoring.")
+    else:
+        # Test mode: --trajectories_per_sample should not be used
+        if args.trajectories_per_sample != 1:  # 1 is the default
+            logger.warning("--trajectories_per_sample is only used in full mode (without --test_mode). Ignoring.")
+            args.trajectories_per_sample = 1  # Reset to default for test mode
+    
+    # Determine output mode: test_mode uses verbose logging, full mode uses progress bar
+    use_progress_bar = not args.test_mode
     
     input_dir = Path(args.input_dir)
     output_path = Path(args.output_path)
@@ -1221,8 +1289,11 @@ def main():
     logger.info("Models will be loaded on-demand to optimize GPU memory usage")
     
     # Statistics
+    total_iterations_per_tier = len(bfcl_objects) * args.trajectories_per_sample
     stats = {
         'total_samples': len(bfcl_objects),
+        'trajectories_per_sample': args.trajectories_per_sample,
+        'total_iterations_per_tier': total_iterations_per_tier,
         'expert_success': 0,
         'expert_failed': 0,
         'intermediate_success': 0,
@@ -1230,6 +1301,10 @@ def main():
         'weak_success': 0,
         'weak_failed': 0,
     }
+    
+    if args.trajectories_per_sample > 1:
+        logger.info(f"Generating {args.trajectories_per_sample} trajectories per sample")
+        logger.info(f"Total iterations per model tier: {total_iterations_per_tier}")
     
     # Process all objects by model tier (load one model at a time)
     all_trajectories = []
@@ -1256,11 +1331,39 @@ def main():
             logger.info(f"{model_tier.capitalize()} model loaded successfully!")
         except Exception as e:
             logger.error(f"Failed to load {model_tier} model: {e}")
-            stats[f"{model_tier}_failed"] = len(bfcl_objects)
+            stats[f"{model_tier}_failed"] = len(bfcl_objects) * args.trajectories_per_sample
             continue
         
         # Process all samples with this model
-        for idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
+        # Calculate total iterations (samples × trajectories_per_sample)
+        total_iterations = len(bfcl_objects) * args.trajectories_per_sample
+        
+        # Use tqdm progress bar for full runs, verbose logging for test mode
+        if use_progress_bar:
+            # Create a flat iterator over (sample_idx, trajectory_idx, bfcl_obj)
+            def iteration_generator():
+                iter_num = 0
+                for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
+                    for traj_idx in range(1, args.trajectories_per_sample + 1):
+                        iter_num += 1
+                        yield iter_num, sample_idx, traj_idx, file_path, bfcl_obj
+            
+            sample_iterator = tqdm(
+                iteration_generator(),
+                total=total_iterations,
+                desc=f"[{model_tier}]",
+                unit="traj"
+            )
+        else:
+            def iteration_generator():
+                iter_num = 0
+                for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
+                    for traj_idx in range(1, args.trajectories_per_sample + 1):
+                        iter_num += 1
+                        yield iter_num, sample_idx, traj_idx, file_path, bfcl_obj
+            sample_iterator = iteration_generator()
+        
+        for iter_num, sample_idx, traj_idx, file_path, bfcl_obj in sample_iterator:
             obj_id = bfcl_obj.get("id", "unknown")
             involved_classes = bfcl_obj.get("involved_classes", [])
             tool_paths = bfcl_obj.get("path", [])
@@ -1268,7 +1371,12 @@ def main():
             # Load tool docs for this object
             tool_docs = load_tool_docs(involved_classes, func_doc_dir)
             
-            logger.info(f"[{model_tier}] Processing {obj_id} ({idx}/{len(bfcl_objects)})...")
+            # Only log verbose output in test mode (not using progress bar)
+            if not use_progress_bar:
+                if args.trajectories_per_sample > 1:
+                    logger.info(f"[{model_tier}] Processing {obj_id} traj {traj_idx}/{args.trajectories_per_sample} ({sample_idx}/{len(bfcl_objects)})...")
+                else:
+                    logger.info(f"[{model_tier}] Processing {obj_id} ({sample_idx}/{len(bfcl_objects)})...")
             
             try:
                 builder = TrajectoryBuilder(
@@ -1277,18 +1385,22 @@ def main():
                     func_doc_dir=func_doc_dir
                 )
                 
-                trajectory = builder.build_trajectory(bfcl_obj, model_tier)
+                # Use unique model_tier identifier when generating multiple trajectories
+                tier_id = f"{model_tier}_t{traj_idx}" if args.trajectories_per_sample > 1 else model_tier
+                trajectory = builder.build_trajectory(bfcl_obj, tier_id)
                 
                 if trajectory:
                     all_trajectories.append(trajectory)
                     stats[f"{model_tier}_success"] += 1
                 else:
                     stats[f"{model_tier}_failed"] += 1
-                    logger.warning(f"Failed to generate trajectory for {obj_id} with {model_tier} model")
+                    if not use_progress_bar:
+                        logger.warning(f"Failed to generate trajectory for {obj_id} with {model_tier} model")
             
             except Exception as e:
                 stats[f"{model_tier}_failed"] += 1
-                logger.error(f"Error processing {obj_id} with {model_tier} model: {e}")
+                if not use_progress_bar:
+                    logger.error(f"Error processing {obj_id} with {model_tier} model: {e}")
         
         # Unload model to free GPU memory
         logger.info(f"Unloading {model_tier} model to free GPU memory...")
@@ -1306,11 +1418,14 @@ def main():
     # Log final statistics
     logger.info("=" * 60)
     logger.info("Trajectory generation complete!")
-    logger.info(f"Total samples processed: {stats['total_samples']}")
+    logger.info(f"Total samples: {stats['total_samples']}")
+    if stats['trajectories_per_sample'] > 1:
+        logger.info(f"Trajectories per sample: {stats['trajectories_per_sample']}")
+        logger.info(f"Total iterations per tier: {stats['total_iterations_per_tier']}")
     logger.info(f"Expert model: {stats['expert_success']} success, {stats['expert_failed']} failed")
     logger.info(f"Intermediate model: {stats['intermediate_success']} success, {stats['intermediate_failed']} failed")
     logger.info(f"Weak model: {stats['weak_success']} success, {stats['weak_failed']} failed")
-    logger.info(f"Total trajectories: {len(all_trajectories)}")
+    logger.info(f"Total trajectories generated: {len(all_trajectories)}")
     logger.info(f"Output written to: {output_path}")
     logger.info("=" * 60)
     

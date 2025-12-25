@@ -75,6 +75,30 @@ CLASS_TO_DOC_FILE = {
     "MemoryAPI_rec_sum": "memory_rec_sum.json",
 }
 
+# Reward conditioning tokens (special tokens for tokenizer)
+HIGH_REWARD_TOKEN = "<|high_reward|>"
+MID_REWARD_TOKEN = "<|mid_reward|>"
+LOW_REWARD_TOKEN = "<|low_reward|>"
+
+
+def get_reward_prompt(reward_level: str = "high") -> str:
+    """
+    Generate reward-conditioned prompt suffix for user messages.
+    
+    Args:
+        reward_level: One of "high", "mid", or "low"
+        
+    Returns:
+        Formatted reward prompt string to append to user messages
+    """
+    token = {
+        "high": HIGH_REWARD_TOKEN,
+        "mid": MID_REWARD_TOKEN,
+        "low": LOW_REWARD_TOKEN
+    }.get(reward_level, HIGH_REWARD_TOKEN)
+    
+    return f"\n\n[Reward Goal: {token}]"
+
 
 def load_tool_docs(involved_classes: List[str], func_doc_dir: Path) -> Dict[str, Any]:
     """
@@ -1288,10 +1312,10 @@ def create_cumulative_glaive_records(
         # Get user request for this turn
         user_request = extract_user_request_for_turn(questions, turn_idx)
         
-        # Add human message
+        # Add human message with reward conditioning (expert trajectories use high reward)
         conversations_so_far.append({
             "from": "human",
-            "value": user_request
+            "value": user_request + get_reward_prompt("high")
         })
         
         # Get ground truth actions for this turn
@@ -1444,10 +1468,10 @@ def create_single_glaive_record(
         # Get user request for this turn
         user_request = extract_user_request_for_turn(questions, turn_idx)
         
-        # Add human message
+        # Add human message with reward conditioning (expert trajectories use high reward)
         conversations.append({
             "from": "human",
-            "value": user_request
+            "value": user_request + get_reward_prompt("high")
         })
         
         # Get ground truth actions for this turn
