@@ -16,8 +16,11 @@ For each BFCL sample, generates 3 separate trajectory records (one per model tie
 import argparse
 import json
 import logging
+import multiprocessing
 import re
+from multiprocessing import Pool, Manager
 from pathlib import Path
+from threading import Thread
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
@@ -1112,6 +1115,107 @@ def filter_for_test_mode(
     return selected
 
 
+def process_shard(args_tuple):
+    """
+    Worker function to process a shard of samples on a specific GPU.
+    
+    This function runs in a separate process with its own GPU assignment.
+    It loads the model, processes all samples in its shard, and returns trajectories.
+    
+    Args:
+        args_tuple: Tuple containing:
+            - gpu_id: GPU index to use
+            - model_config: Model configuration dictionary
+            - bfcl_shard: List of (file_path, bfcl_obj) tuples to process
+            - model_tier: Model tier identifier (expert/intermediate/weak)
+            - func_doc_dir: Path to func_doc directory
+            - trajectories_per_sample: Number of trajectories per sample
+            - progress_counter: Shared counter for progress tracking (optional)
+            - use_progress_bar: Whether to use progress bar mode
+            
+    Returns:
+        Tuple of (trajectories_list, success_count, failed_count)
+    """
+    (gpu_id, model_config, bfcl_shard, model_tier, func_doc_dir, 
+     trajectories_per_sample, progress_counter, use_progress_bar) = args_tuple
+    
+    # Set GPU for this worker process BEFORE any CUDA operations
+    # In a forked subprocess, this is set before torch initializes CUDA
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    
+    # Force torch to see only the assigned GPU
+    # After setting CUDA_VISIBLE_DEVICES, cuda:0 refers to the assigned GPU
+    import torch as torch_worker
+    
+    trajectories = []
+    success_count = 0
+    failed_count = 0
+    
+    # Get a worker-specific logger
+    worker_logger = logging.getLogger(f"worker_{gpu_id}")
+    
+    # Load model for this worker (on cuda:0 since we set CUDA_VISIBLE_DEVICES)
+    try:
+        worker_logger.info(f"[GPU {gpu_id}] Loading {model_tier} model from {model_config['path']}...")
+        
+        generator = ModelGenerator(
+            model_path=model_config["path"],
+            device="cuda:0",  # Always cuda:0 since we set CUDA_VISIBLE_DEVICES
+            quantization=model_config["quantization"],
+            max_new_tokens=model_config["max_new_tokens"],
+            use_auto_device_map=False  # Disable auto device map for single GPU
+        )
+        worker_logger.info(f"[GPU {gpu_id}] Model loaded successfully!")
+    except Exception as e:
+        worker_logger.error(f"[GPU {gpu_id}] Failed to load model: {e}")
+        # Return failure count for all samples
+        total_failed = len(bfcl_shard) * trajectories_per_sample
+        return ([], 0, total_failed)
+    
+    # Process all samples in this shard
+    for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_shard, 1):
+        obj_id = bfcl_obj.get("id", "unknown")
+        involved_classes = bfcl_obj.get("involved_classes", [])
+        
+        # Load tool docs for this object
+        tool_docs = load_tool_docs(involved_classes, func_doc_dir)
+        
+        # Generate multiple trajectories per sample if requested
+        for traj_idx in range(1, trajectories_per_sample + 1):
+            try:
+                builder = TrajectoryBuilder(
+                    model_generator=generator,
+                    tool_docs=tool_docs,
+                    func_doc_dir=func_doc_dir
+                )
+                
+                # Use unique model_tier identifier when generating multiple trajectories
+                tier_id = f"{model_tier}_t{traj_idx}" if trajectories_per_sample > 1 else model_tier
+                trajectory = builder.build_trajectory(bfcl_obj, tier_id)
+                
+                if trajectory:
+                    trajectories.append(trajectory)
+                    success_count += 1
+                else:
+                    failed_count += 1
+                
+            except Exception as e:
+                failed_count += 1
+                if not use_progress_bar:
+                    worker_logger.error(f"[GPU {gpu_id}] Error processing {obj_id}: {e}")
+            
+            # Update shared progress counter (Manager.Value is already process-safe)
+            if progress_counter is not None:
+                progress_counter.value += 1
+    
+    # Clean up
+    del generator
+    if torch_worker.cuda.is_available():
+        torch_worker.cuda.empty_cache()
+    
+    return (trajectories, success_count, failed_count)
+
+
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
@@ -1199,6 +1303,12 @@ def main():
         type=int,
         default=1,
         help="[Full mode only] Number of trajectories to generate per sample (default: 1). Use >1 to generate diverse trajectories for the same input."
+    )
+    parser.add_argument(
+        "--num_gpus",
+        type=int,
+        default=1,
+        help="Number of GPUs to use for data parallelism (default: 1). Each GPU processes a shard of data independently for near-linear speedup."
     )
     
     args = parser.parse_args()
@@ -1288,6 +1398,15 @@ def main():
     
     logger.info("Models will be loaded on-demand to optimize GPU memory usage")
     
+    # Log multi-GPU configuration and set spawn method
+    if args.num_gpus > 1:
+        logger.info(f"Multi-GPU mode enabled: using {args.num_gpus} GPUs for data parallelism")
+        # Set multiprocessing start method to 'spawn' to avoid CUDA forking issues
+        try:
+            multiprocessing.set_start_method('spawn', force=True)
+        except RuntimeError:
+            pass  # Already set
+    
     # Statistics
     total_iterations_per_tier = len(bfcl_objects) * args.trajectories_per_sample
     stats = {
@@ -1317,97 +1436,177 @@ def main():
         logger.info(f"Processing all samples with {model_tier.upper()} model")
         logger.info("=" * 60)
         
-        # Load model for this tier
         config = model_configs[model_tier]
-        try:
-            logger.info(f"Loading {model_tier} model from {config['path']}...")
-            generator = ModelGenerator(
-                model_path=config["path"],
-                device=config["device"],
-                quantization=config["quantization"],
-                max_new_tokens=config["max_new_tokens"],
-                use_auto_device_map=config["use_auto_device_map"]
-            )
-            logger.info(f"{model_tier.capitalize()} model loaded successfully!")
-        except Exception as e:
-            logger.error(f"Failed to load {model_tier} model: {e}")
-            stats[f"{model_tier}_failed"] = len(bfcl_objects) * args.trajectories_per_sample
-            continue
-        
-        # Process all samples with this model
-        # Calculate total iterations (samples × trajectories_per_sample)
         total_iterations = len(bfcl_objects) * args.trajectories_per_sample
         
-        # Use tqdm progress bar for full runs, verbose logging for test mode
-        if use_progress_bar:
-            # Create a flat iterator over (sample_idx, trajectory_idx, bfcl_obj)
-            def iteration_generator():
-                iter_num = 0
-                for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
-                    for traj_idx in range(1, args.trajectories_per_sample + 1):
-                        iter_num += 1
-                        yield iter_num, sample_idx, traj_idx, file_path, bfcl_obj
+        # ============================================================
+        # MULTI-GPU MODE: Distribute data across GPUs
+        # ============================================================
+        if args.num_gpus > 1:
+            logger.info(f"Distributing {len(bfcl_objects)} samples across {args.num_gpus} GPUs...")
             
-            sample_iterator = tqdm(
-                iteration_generator(),
-                total=total_iterations,
-                desc=f"[{model_tier}]",
-                unit="traj"
-            )
-        else:
-            def iteration_generator():
-                iter_num = 0
-                for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
-                    for traj_idx in range(1, args.trajectories_per_sample + 1):
-                        iter_num += 1
-                        yield iter_num, sample_idx, traj_idx, file_path, bfcl_obj
-            sample_iterator = iteration_generator()
-        
-        for iter_num, sample_idx, traj_idx, file_path, bfcl_obj in sample_iterator:
-            obj_id = bfcl_obj.get("id", "unknown")
-            involved_classes = bfcl_obj.get("involved_classes", [])
-            tool_paths = bfcl_obj.get("path", [])
+            # Split samples into shards (one per GPU)
+            shard_size = len(bfcl_objects) // args.num_gpus
+            remainder = len(bfcl_objects) % args.num_gpus
             
-            # Load tool docs for this object
-            tool_docs = load_tool_docs(involved_classes, func_doc_dir)
+            shards = []
+            start_idx = 0
+            for gpu_id in range(args.num_gpus):
+                # Distribute remainder among first few GPUs
+                end_idx = start_idx + shard_size + (1 if gpu_id < remainder else 0)
+                shards.append(bfcl_objects[start_idx:end_idx])
+                start_idx = end_idx
             
-            # Only log verbose output in test mode (not using progress bar)
-            if not use_progress_bar:
-                if args.trajectories_per_sample > 1:
-                    logger.info(f"[{model_tier}] Processing {obj_id} traj {traj_idx}/{args.trajectories_per_sample} ({sample_idx}/{len(bfcl_objects)})...")
-                else:
-                    logger.info(f"[{model_tier}] Processing {obj_id} ({sample_idx}/{len(bfcl_objects)})...")
+            for gpu_id, shard in enumerate(shards):
+                logger.info(f"  GPU {gpu_id}: {len(shard)} samples")
             
-            try:
-                builder = TrajectoryBuilder(
-                    model_generator=generator,
-                    tool_docs=tool_docs,
-                    func_doc_dir=func_doc_dir
+            # Create shared progress counter for tqdm using Manager (can be shared across processes)
+            if use_progress_bar:
+                manager = Manager()
+                progress_counter = manager.Value('i', 0)
+                
+                # Start progress bar update thread
+                def update_progress_bar(pbar, counter, total):
+                    import time
+                    while counter.value < total:
+                        pbar.n = counter.value
+                        pbar.refresh()
+                        time.sleep(0.5)
+                    pbar.n = total
+                    pbar.refresh()
+                
+                pbar = tqdm(total=total_iterations, desc=f"[{model_tier}]", unit="traj")
+                progress_thread = Thread(target=update_progress_bar, args=(pbar, progress_counter, total_iterations))
+                progress_thread.daemon = True
+                progress_thread.start()
+            else:
+                progress_counter = None
+                manager = None
+            
+            # Prepare worker arguments for each GPU
+            worker_args = [
+                (
+                    gpu_id,
+                    config,
+                    list(shard),
+                    model_tier,
+                    func_doc_dir,
+                    args.trajectories_per_sample,
+                    progress_counter,
+                    use_progress_bar
                 )
+                for gpu_id, shard in enumerate(shards)
+            ]
+            
+            # Process shards in parallel using multiprocessing Pool
+            logger.info(f"Starting {args.num_gpus} worker processes...")
+            with Pool(processes=args.num_gpus) as pool:
+                shard_results = pool.map(process_shard, worker_args)
+            
+            # Close progress bar and manager if using them
+            if use_progress_bar:
+                pbar.close()
+            if manager is not None:
+                manager.shutdown()
+            
+            # Merge results from all workers
+            for trajectories, success, failed in shard_results:
+                all_trajectories.extend(trajectories)
+                stats[f"{model_tier}_success"] += success
+                stats[f"{model_tier}_failed"] += failed
+            
+            logger.info(f"All {args.num_gpus} workers completed for {model_tier} model")
+        
+        # ============================================================
+        # SINGLE-GPU MODE: Original sequential processing
+        # ============================================================
+        else:
+            # Load model for this tier
+            try:
+                logger.info(f"Loading {model_tier} model from {config['path']}...")
+                generator = ModelGenerator(
+                    model_path=config["path"],
+                    device=config["device"],
+                    quantization=config["quantization"],
+                    max_new_tokens=config["max_new_tokens"],
+                    use_auto_device_map=config["use_auto_device_map"]
+                )
+                logger.info(f"{model_tier.capitalize()} model loaded successfully!")
+            except Exception as e:
+                logger.error(f"Failed to load {model_tier} model: {e}")
+                stats[f"{model_tier}_failed"] = len(bfcl_objects) * args.trajectories_per_sample
+                continue
+            
+            # Use tqdm progress bar for full runs, verbose logging for test mode
+            if use_progress_bar:
+                # Create a flat iterator over (sample_idx, trajectory_idx, bfcl_obj)
+                def iteration_generator():
+                    iter_num = 0
+                    for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
+                        for traj_idx in range(1, args.trajectories_per_sample + 1):
+                            iter_num += 1
+                            yield iter_num, sample_idx, traj_idx, file_path, bfcl_obj
                 
-                # Use unique model_tier identifier when generating multiple trajectories
-                tier_id = f"{model_tier}_t{traj_idx}" if args.trajectories_per_sample > 1 else model_tier
-                trajectory = builder.build_trajectory(bfcl_obj, tier_id)
+                sample_iterator = tqdm(
+                    iteration_generator(),
+                    total=total_iterations,
+                    desc=f"[{model_tier}]",
+                    unit="traj"
+                )
+            else:
+                def iteration_generator():
+                    iter_num = 0
+                    for sample_idx, (file_path, bfcl_obj) in enumerate(bfcl_objects, 1):
+                        for traj_idx in range(1, args.trajectories_per_sample + 1):
+                            iter_num += 1
+                            yield iter_num, sample_idx, traj_idx, file_path, bfcl_obj
+                sample_iterator = iteration_generator()
+            
+            for iter_num, sample_idx, traj_idx, file_path, bfcl_obj in sample_iterator:
+                obj_id = bfcl_obj.get("id", "unknown")
+                involved_classes = bfcl_obj.get("involved_classes", [])
+                tool_paths = bfcl_obj.get("path", [])
                 
-                if trajectory:
-                    all_trajectories.append(trajectory)
-                    stats[f"{model_tier}_success"] += 1
-                else:
+                # Load tool docs for this object
+                tool_docs = load_tool_docs(involved_classes, func_doc_dir)
+                
+                # Only log verbose output in test mode (not using progress bar)
+                if not use_progress_bar:
+                    if args.trajectories_per_sample > 1:
+                        logger.info(f"[{model_tier}] Processing {obj_id} traj {traj_idx}/{args.trajectories_per_sample} ({sample_idx}/{len(bfcl_objects)})...")
+                    else:
+                        logger.info(f"[{model_tier}] Processing {obj_id} ({sample_idx}/{len(bfcl_objects)})...")
+                
+                try:
+                    builder = TrajectoryBuilder(
+                        model_generator=generator,
+                        tool_docs=tool_docs,
+                        func_doc_dir=func_doc_dir
+                    )
+                    
+                    # Use unique model_tier identifier when generating multiple trajectories
+                    tier_id = f"{model_tier}_t{traj_idx}" if args.trajectories_per_sample > 1 else model_tier
+                    trajectory = builder.build_trajectory(bfcl_obj, tier_id)
+                    
+                    if trajectory:
+                        all_trajectories.append(trajectory)
+                        stats[f"{model_tier}_success"] += 1
+                    else:
+                        stats[f"{model_tier}_failed"] += 1
+                        if not use_progress_bar:
+                            logger.warning(f"Failed to generate trajectory for {obj_id} with {model_tier} model")
+                
+                except Exception as e:
                     stats[f"{model_tier}_failed"] += 1
                     if not use_progress_bar:
-                        logger.warning(f"Failed to generate trajectory for {obj_id} with {model_tier} model")
+                        logger.error(f"Error processing {obj_id} with {model_tier} model: {e}")
             
-            except Exception as e:
-                stats[f"{model_tier}_failed"] += 1
-                if not use_progress_bar:
-                    logger.error(f"Error processing {obj_id} with {model_tier} model: {e}")
-        
-        # Unload model to free GPU memory
-        logger.info(f"Unloading {model_tier} model to free GPU memory...")
-        del generator
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        logger.info(f"GPU memory cleared")
+            # Unload model to free GPU memory
+            logger.info(f"Unloading {model_tier} model to free GPU memory...")
+            del generator
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            logger.info(f"GPU memory cleared")
     
     # Write output
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1419,6 +1618,8 @@ def main():
     logger.info("=" * 60)
     logger.info("Trajectory generation complete!")
     logger.info(f"Total samples: {stats['total_samples']}")
+    if args.num_gpus > 1:
+        logger.info(f"GPUs used: {args.num_gpus} (data parallelism)")
     if stats['trajectories_per_sample'] > 1:
         logger.info(f"Trajectories per sample: {stats['trajectories_per_sample']}")
         logger.info(f"Total iterations per tier: {stats['total_iterations_per_tier']}")
