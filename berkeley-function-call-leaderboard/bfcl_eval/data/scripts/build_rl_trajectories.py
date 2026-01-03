@@ -21,7 +21,7 @@ import re
 from copy import deepcopy
 from multiprocessing import Pool, Manager
 from pathlib import Path
-from threading import Thread
+from threading import Thread, Event
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
@@ -1469,24 +1469,26 @@ def main():
                 if use_progress_bar:
                     manager = Manager()
                     progress_counter = manager.Value('i', 0)
+                    stop_progress_thread = Event()
                     
                     # Start progress bar update thread
-                    def update_progress_bar(pbar, counter, total):
+                    def update_progress_bar(pbar, counter, total, stop_event):
                         import time
-                        while counter.value < total:
+                        while not stop_event.is_set() and counter.value < total:
                             pbar.n = counter.value
                             pbar.refresh()
                             time.sleep(0.5)
-                        pbar.n = total
+                        pbar.n = min(counter.value, total)
                         pbar.refresh()
                     
                     pbar = tqdm(total=total_iterations, desc=f"[{batch_name}/{model_tier}]", unit="traj")
-                    progress_thread = Thread(target=update_progress_bar, args=(pbar, progress_counter, total_iterations))
+                    progress_thread = Thread(target=update_progress_bar, args=(pbar, progress_counter, total_iterations, stop_progress_thread))
                     progress_thread.daemon = True
                     progress_thread.start()
                 else:
                     progress_counter = None
                     manager = None
+                    stop_progress_thread = None
                 
                 # Prepare worker arguments for each GPU
                 worker_args = [
@@ -1510,6 +1512,9 @@ def main():
                 
                 # Close progress bar and manager if using them
                 if use_progress_bar:
+                    # Signal thread to stop and wait for it before shutting down manager
+                    stop_progress_thread.set()
+                    progress_thread.join(timeout=2.0)  # Wait up to 2 seconds
                     pbar.close()
                 if manager is not None:
                     manager.shutdown()
