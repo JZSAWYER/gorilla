@@ -1,0 +1,26 @@
+---
+alwaysApply: true
+---
+
+# BFCL Data Directory Structure Rules
+
+## File Placement
+- Place official BFCL benchmark datasets (BFCL_v4_*.json) at data/ root
+- Place all Python/shell scripts in data/scripts/
+- Place generated training data in data/generated/sft/ or data/generated/rl/
+- Place evaluation results in data/generated/evaluation/
+- Place visualization outputs (PNG, SVG) in data/outputs/plots/
+- Place data format templates in data/templates/
+
+## Naming Conventions
+- Benchmark files: BFCL_v4_{category}.json
+- SFT datasets: bfcl_sft_{version_or_name}.json
+- RL data: rl_{type}_{optional_suffix}.json
+- Evaluation: {metric}_results.json or trajectory_reward_results.json
+- Comparison: compare_{a}_vs_{b}.json
+- Plots: {metric}_histogram.png or {name}_chart.png
+
+## Script Execution
+- Run shell scripts from data/scripts/ directory: cd data/scripts && ./build_sft_data.sh
+- Scripts use relative paths from scripts/ to access parent data directory
+- Local config paths are in config.local.sh (not tracked by git)
