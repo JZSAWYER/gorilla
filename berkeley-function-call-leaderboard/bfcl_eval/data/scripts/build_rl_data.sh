@@ -30,10 +30,9 @@ python build_rl_trajectories.py \
   --intermediate_model_path "${MODEL_ROOT_PATH}/Qwen2.5-1.5B-Instruct" \
   --weak_model_path "${MODEL_ROOT_PATH}/Qwen2.5-0.5B-Instruct" \
   --num_gpus 8 \
-  --trajectories_per_sample 2 \
+  --trajectories_per_sample 4 \
   --split \
-  --train_ratio 0.75 \
-  --max_samples 8
+  --train_ratio 0.75 
 
 # Generate for a specific API with n samples:
 # python build_rl_trajectories.py \
