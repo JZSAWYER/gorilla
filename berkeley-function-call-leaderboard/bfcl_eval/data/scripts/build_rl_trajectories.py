@@ -740,7 +740,8 @@ class TrajectoryBuilder:
         self,
         model_generator: ModelGenerator,
         tool_docs: Dict[str, Any],
-        func_doc_dir: Optional[Path] = None
+        func_doc_dir: Optional[Path] = None,
+        aligned: bool = False  # RC-GRPO: Align with official BFCL format
     ):
         """
         Initialize trajectory builder.
@@ -749,10 +750,12 @@ class TrajectoryBuilder:
             model_generator: ModelGenerator instance for generating tool calls
             tool_docs: Tool documentation dictionary
             func_doc_dir: Optional path to func_doc directory for environment
+            aligned: If True, align with official BFCL format (no environment setup message)
         """
         self.model_generator = model_generator
         self.tool_docs = tool_docs
         self.func_doc_dir = func_doc_dir
+        self.aligned = aligned  # RC-GRPO: Alignment flag
         self.env = None
     
     def build_trajectory(
@@ -796,8 +799,9 @@ class TrajectoryBuilder:
         # Build conversations array
         conversations = []
         
-        # Add initial environment context
-        if initial_config:
+        # RC-GRPO: Only add initial environment context if NOT aligned with official BFCL
+        # Official BFCL does NOT show initial_config to the model - it's only used for backend execution
+        if not self.aligned and initial_config:
             env_description = format_initial_config(initial_config)
             if env_description and env_description != "No initial configuration provided.":
                 env_context = f"Environment setup:\n{env_description}"
@@ -1085,12 +1089,13 @@ def process_shard(args_tuple):
             - trajectories_per_sample: Number of trajectories per sample
             - progress_counter: Shared counter for progress tracking (optional)
             - use_progress_bar: Whether to use progress bar mode
+            - aligned: Whether to align with official BFCL format (RC-GRPO)
             
     Returns:
         Tuple of (trajectories_list, success_count, failed_count)
     """
     (gpu_id, model_config, bfcl_shard, model_tier, func_doc_dir, 
-     trajectories_per_sample, progress_counter, use_progress_bar) = args_tuple
+     trajectories_per_sample, progress_counter, use_progress_bar, aligned) = args_tuple
     
     # Set GPU for this worker process BEFORE any CUDA operations
     # In a forked subprocess, this is set before torch initializes CUDA
@@ -1139,7 +1144,8 @@ def process_shard(args_tuple):
                 builder = TrajectoryBuilder(
                     model_generator=generator,
                     tool_docs=tool_docs,
-                    func_doc_dir=func_doc_dir
+                    func_doc_dir=func_doc_dir,
+                    aligned=aligned  # RC-GRPO: Pass alignment flag
                 )
                 
                 # Use unique model_tier identifier when generating multiple trajectories
@@ -1280,6 +1286,13 @@ def main():
         default=42,
         help="Random seed for reproducible train/test splits (default: 42)"
     )
+    parser.add_argument(
+        "--aligned",
+        action="store_true",
+        help="[RC-GRPO] Align with official BFCL format: no environment setup message, no acknowledgment. "
+             "When enabled, trajectories match the official BFCL evaluation prompt format where initial_config "
+             "is NOT shown to the model. This is recommended for SFT data generation."
+    )
     
     args = parser.parse_args()
     
@@ -1397,6 +1410,15 @@ def main():
     
     logger.info("Models will be loaded on-demand to optimize GPU memory usage")
     
+    # RC-GRPO: Log alignment mode
+    if args.aligned:
+        logger.info("=" * 60)
+        logger.info("[RC-GRPO] ALIGNED MODE ENABLED")
+        logger.info("  - No environment setup message in trajectories")
+        logger.info("  - Matches official BFCL evaluation prompt format")
+        logger.info("  - Recommended for SFT data generation")
+        logger.info("=" * 60)
+    
     # Log multi-GPU configuration and set spawn method
     if args.num_gpus > 1:
         logger.info(f"Multi-GPU mode enabled: using {args.num_gpus} GPUs for data parallelism")
@@ -1500,7 +1522,8 @@ def main():
                         func_doc_dir,
                         args.trajectories_per_sample,
                         progress_counter,
-                        use_progress_bar
+                        use_progress_bar,
+                        args.aligned  # RC-GRPO: Pass alignment flag
                     )
                     for gpu_id, shard in enumerate(shards)
                 ]
@@ -1590,7 +1613,8 @@ def main():
                         builder = TrajectoryBuilder(
                             model_generator=generator,
                             tool_docs=tool_docs,
-                            func_doc_dir=func_doc_dir
+                            func_doc_dir=func_doc_dir,
+                            aligned=args.aligned  # RC-GRPO: Pass alignment flag
                         )
                         
                         # Use unique model_tier identifier when generating multiple trajectories
