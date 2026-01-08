@@ -1235,7 +1235,8 @@ def create_cumulative_glaive_records(
     tool_docs: Dict[str, Any],
     ground_truth: Optional[List[List[str]]],
     input_file_path: Path,
-    use_real_observations: bool = True
+    use_real_observations: bool = True,
+    add_reward_prompt: bool = True
 ) -> List[Dict[str, Any]]:
     """
     Convert a BFCL object into multiple cumulative Glaive training records.
@@ -1259,6 +1260,7 @@ def create_cumulative_glaive_records(
         ground_truth: Ground truth function calls
         input_file_path: Path to input file (for context)
         use_real_observations: If True, use environment to generate real observations
+        add_reward_prompt: If True, append reward conditioning prompt to user messages
         
     Returns:
         List of Glaive record dictionaries (one per turn), or empty list if invalid
@@ -1319,10 +1321,11 @@ def create_cumulative_glaive_records(
         # Get user request for this turn
         user_request = extract_user_request_for_turn(questions, turn_idx)
         
-        # Add human message with reward conditioning (expert trajectories use high reward)
+        # Add human message (optionally with reward conditioning for expert trajectories)
+        human_value = user_request + get_reward_prompt("high") if add_reward_prompt else user_request
         conversations_so_far.append({
             "from": "human",
-            "value": user_request + get_reward_prompt("high")
+            "value": human_value
         })
         
         # Get ground truth actions for this turn
@@ -1398,7 +1401,8 @@ def create_single_glaive_record(
     tool_docs: Dict[str, Any],
     ground_truth: Optional[List[List[str]]],
     input_file_path: Path,
-    use_real_observations: bool = True
+    use_real_observations: bool = True,
+    add_reward_prompt: bool = True
 ) -> Optional[Dict[str, Any]]:
     """
     Convert a BFCL object into a single Glaive training record with all turns merged.
@@ -1416,6 +1420,7 @@ def create_single_glaive_record(
         ground_truth: Ground truth function calls
         input_file_path: Path to input file (for context)
         use_real_observations: If True, use environment to generate real observations
+        add_reward_prompt: If True, append reward conditioning prompt to user messages
         
     Returns:
         Single Glaive record dictionary, or None if invalid
@@ -1475,10 +1480,11 @@ def create_single_glaive_record(
         # Get user request for this turn
         user_request = extract_user_request_for_turn(questions, turn_idx)
         
-        # Add human message with reward conditioning (expert trajectories use high reward)
+        # Add human message (optionally with reward conditioning for expert trajectories)
+        human_value = user_request + get_reward_prompt("high") if add_reward_prompt else user_request
         conversations.append({
             "from": "human",
-            "value": user_request + get_reward_prompt("high")
+            "value": human_value
         })
         
         # Get ground truth actions for this turn
@@ -1678,7 +1684,8 @@ def process_bfcl_objects(
     tool_docs: Dict[str, Any],
     stats: Dict[str, int],
     use_real_observations: bool = True,
-    mode: str = "cumulative"
+    mode: str = "cumulative",
+    add_reward_prompt: bool = True
 ) -> List[Dict[str, Any]]:
     """
     Process a list of BFCL objects (file_path, bfcl_obj tuples).
@@ -1689,6 +1696,7 @@ def process_bfcl_objects(
         stats: Statistics dictionary to update
         use_real_observations: If True, use environment to generate real observations
         mode: Output mode - "cumulative" or "single"
+        add_reward_prompt: If True, append reward conditioning prompt to user messages
         
     Returns:
         List of Glaive records
@@ -1709,7 +1717,8 @@ def process_bfcl_objects(
                     tool_docs, 
                     ground_truth, 
                     file_path,
-                    use_real_observations=use_real_observations
+                    use_real_observations=use_real_observations,
+                    add_reward_prompt=add_reward_prompt
                 )
                 
                 if records_list:
@@ -1723,7 +1732,8 @@ def process_bfcl_objects(
                     tool_docs,
                     ground_truth,
                     file_path,
-                    use_real_observations=use_real_observations
+                    use_real_observations=use_real_observations,
+                    add_reward_prompt=add_reward_prompt
                 )
                 
                 if record:
@@ -1793,6 +1803,11 @@ def main():
         default=42,
         help="Random seed for reproducible train/test splits (default: 42)"
     )
+    parser.add_argument(
+        "--no_reward_prompt",
+        action="store_true",
+        help="Disable adding reward conditioning prompt to user messages"
+    )
     
     args = parser.parse_args()
     
@@ -1861,7 +1876,8 @@ def main():
         }
         train_records = process_bfcl_objects(
             train_objects, tool_docs, train_stats,
-            use_real_observations=args.use_real_observations, mode=args.mode
+            use_real_observations=args.use_real_observations, mode=args.mode,
+            add_reward_prompt=not args.no_reward_prompt
         )
         
         # Process test split
@@ -1874,7 +1890,8 @@ def main():
         }
         test_records = process_bfcl_objects(
             test_objects, tool_docs, test_stats,
-            use_real_observations=args.use_real_observations, mode=args.mode
+            use_real_observations=args.use_real_observations, mode=args.mode,
+            add_reward_prompt=not args.no_reward_prompt
         )
         
         # Write train output
@@ -1912,7 +1929,8 @@ def main():
         # Process all objects
         all_glaive_records = process_bfcl_objects(
             bfcl_objects, tool_docs, stats,
-            use_real_observations=args.use_real_observations, mode=args.mode
+            use_real_observations=args.use_real_observations, mode=args.mode,
+            add_reward_prompt=not args.no_reward_prompt
         )
         
         # Write output

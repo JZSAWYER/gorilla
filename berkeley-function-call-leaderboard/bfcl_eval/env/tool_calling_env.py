@@ -8,10 +8,18 @@ interface for tool calling with observation generation.
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from bfcl_eval.env.action_parser import ActionParser
-from bfcl_eval.env.api_manager import APIManager
-from bfcl_eval.env.observation_generator import ObservationGenerator
-from bfcl_eval.env.episode_manager import EpisodeManager
+# RC-GRPO: Try package imports first (for bfcl_eval.env), fallback to direct imports
+try:
+    from bfcl_eval.env.action_parser import ActionParser
+    from bfcl_eval.env.api_manager import APIManager
+    from bfcl_eval.env.observation_generator import ObservationGenerator
+    from bfcl_eval.env.episode_manager import EpisodeManager
+except ImportError:
+    # Fallback for direct imports (via sys.path)
+    from action_parser import ActionParser
+    from api_manager import APIManager
+    from observation_generator import ObservationGenerator
+    from episode_manager import EpisodeManager
 
 
 class ToolCallingEnvironment:

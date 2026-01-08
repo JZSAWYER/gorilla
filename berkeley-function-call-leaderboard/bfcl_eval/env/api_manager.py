@@ -208,6 +208,16 @@ class APIManager:
             - result: Result of the tool call execution
             - api_instance: The API instance that executed the tool (or None on error)
         """
+        # RC-GRPO: Validate tool_name is a string (prevents 'attribute name must be string' error)
+        if not isinstance(tool_name, str):
+            return (
+                {
+                    "error": f"Tool name must be a string, got {type(tool_name).__name__}",
+                    "received": str(tool_name)[:100]  # Truncate for safety
+                },
+                None
+            )
+        
         # Find which API this tool belongs to
         api_instance = None
         method_name = tool_name

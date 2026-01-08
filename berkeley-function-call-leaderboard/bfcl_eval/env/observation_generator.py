@@ -743,6 +743,38 @@ class ObservationGenerator:
                 status = "logged in" if result["login_status"] else "not logged in"
                 observations.append(f"User is {status}")
         
+        # RC-GRPO FIX: Add cases for discovery tools that need to return full content
+        elif tool_name == "get_tweet":
+            if "id" in result:
+                observations.append(f"Tweet ID: {result['id']}")
+            if "username" in result:
+                observations.append(f"Author: {result['username']}")
+            if "content" in result:
+                # CRITICAL: Include the actual tweet content!
+                observations.append(f"Content: {result['content']}")
+            if "tags" in result and result["tags"]:
+                observations.append(f"Tags: {', '.join(result['tags'])}")
+            if "mentions" in result and result["mentions"]:
+                observations.append(f"Mentions: {', '.join(result['mentions'])}")
+        
+        elif tool_name == "get_user_tweets":
+            # Result is a list of tweets - may be wrapped in _list_result
+            tweets = result.get("_list_result", result if isinstance(result, list) else [])
+            if tweets:
+                observations.append(f"Found {len(tweets)} tweets")
+                for i, tweet in enumerate(tweets[:5]):  # Limit to first 5
+                    if isinstance(tweet, dict) and "content" in tweet:
+                        observations.append(f"Tweet {i+1}: {tweet['content']}")
+        
+        elif tool_name == "search_tweets":
+            # Result is a list of matching tweets - may be wrapped in _list_result
+            tweets = result.get("_list_result", result if isinstance(result, list) else [])
+            if tweets:
+                observations.append(f"Found {len(tweets)} matching tweets")
+                for i, tweet in enumerate(tweets[:5]):  # Limit to first 5
+                    if isinstance(tweet, dict) and "content" in tweet:
+                        observations.append(f"Match {i+1}: {tweet['content']}")
+        
         # Set result and context
         observation_dict["result"] = f"Operation {tool_name} completed"
         if observations:
@@ -799,13 +831,52 @@ class ObservationGenerator:
         
         elif tool_name == "view_messages_sent":
             if "messages" in result:
-                count = len(result["messages"])
-                observations.append(f"Retrieved {count} sent messages")
+                messages = result["messages"]
+                # RC-GRPO FIX: Include actual message content, not just count
+                if isinstance(messages, dict):
+                    count = sum(len(msgs) if isinstance(msgs, list) else 1 for msgs in messages.values())
+                    observations.append(f"Retrieved {count} sent messages")
+                    for receiver_id, msgs in list(messages.items())[:3]:  # Limit
+                        if isinstance(msgs, list):
+                            for msg in msgs[:2]:  # Limit messages per receiver
+                                observations.append(f"To {receiver_id}: {msg}")
+                        else:
+                            observations.append(f"To {receiver_id}: {msgs}")
+                else:
+                    count = len(messages)
+                    observations.append(f"Retrieved {count} sent messages")
         
         elif tool_name == "view_messages_received":
             if "messages" in result:
-                count = len(result["messages"])
-                observations.append(f"Retrieved {count} received messages")
+                messages = result["messages"]
+                # RC-GRPO FIX: Include actual message content
+                if isinstance(messages, dict):
+                    count = sum(len(msgs) if isinstance(msgs, list) else 1 for msgs in messages.values())
+                    observations.append(f"Retrieved {count} received messages")
+                    for sender_id, msgs in list(messages.items())[:3]:  # Limit
+                        if isinstance(msgs, list):
+                            for msg in msgs[:2]:
+                                observations.append(f"From {sender_id}: {msg}")
+                        else:
+                            observations.append(f"From {sender_id}: {msgs}")
+                else:
+                    count = len(messages)
+                    observations.append(f"Retrieved {count} received messages")
+        
+        # RC-GRPO FIX: Add search_messages handler
+        elif tool_name == "search_messages":
+            # Result is {"results": [{"receiver_id": ..., "message": ...}, ...]}
+            if "results" in result:
+                messages = result["results"]
+                if isinstance(messages, list):
+                    observations.append(f"Found {len(messages)} matching messages")
+                    for i, msg in enumerate(messages[:5]):  # Limit to first 5
+                        if isinstance(msg, dict):
+                            msg_content = msg.get("message", "")
+                            receiver = msg.get("receiver_id", "")
+                            observations.append(f"Match {i+1} (to {receiver}): {msg_content}")
+                        else:
+                            observations.append(f"Match {i+1}: {msg}")
         
         elif tool_name == "delete_message":
             if "deleted_status" in result:
@@ -873,9 +944,18 @@ class ObservationGenerator:
         
         elif tool_name == "get_ticket":
             if "id" in result:
-                observations.append(f"Ticket {result['id']} retrieved")
-                if "status" in result:
-                    observations.append(f"Status: {result['status']}")
+                observations.append(f"Ticket ID: {result['id']}")
+            if "title" in result:
+                observations.append(f"Title: {result['title']}")
+            # RC-GRPO FIX: Include the description - critical for discovery
+            if "description" in result:
+                observations.append(f"Description: {result['description']}")
+            if "status" in result:
+                observations.append(f"Status: {result['status']}")
+            if "priority" in result:
+                observations.append(f"Priority: {result['priority']}")
+            if "created_by" in result:
+                observations.append(f"Created by: {result['created_by']}")
         
         elif tool_name == "resolve_ticket":
             if "status" in result:
@@ -893,6 +973,26 @@ class ObservationGenerator:
             if "success" in result:
                 status = "successful" if result["success"] else "failed"
                 observations.append(f"Login {status}")
+        
+        # RC-GRPO FIX: Add get_user_tickets handler
+        elif tool_name == "get_user_tickets":
+            # Handle list result - may be wrapped in _list_result
+            tickets = result.get("_list_result", result if isinstance(result, list) else [])
+            if tickets:
+                observations.append(f"Found {len(tickets)} tickets")
+                for i, ticket in enumerate(tickets[:5]):  # Limit to first 5
+                    if isinstance(ticket, dict):
+                        ticket_info = []
+                        if "id" in ticket:
+                            ticket_info.append(f"ID: {ticket['id']}")
+                        if "title" in ticket:
+                            ticket_info.append(f"Title: {ticket['title']}")
+                        if "description" in ticket:
+                            ticket_info.append(f"Desc: {ticket['description']}")
+                        if "status" in ticket:
+                            ticket_info.append(f"Status: {ticket['status']}")
+                        if ticket_info:
+                            observations.append(f"Ticket {i+1}: {' | '.join(ticket_info)}")
         
         # Set result and context
         observation_dict["result"] = f"Operation {tool_name} completed"
@@ -1001,16 +1101,86 @@ class ObservationGenerator:
             observation_dict["context"] = f"Error in {tool_name}: {result.get('error')}"
             return json.dumps(convert_mpf_to_float(observation_dict))
         
-        # Build context from result
+        # RC-GRPO FIX: Add specific handlers for discovery tools
         observations = []
-        for key, value in result.items():
-            if isinstance(value, (str, int, float, bool)) and value is not None and key != "error":
-                observations.append(f"{key}: {value}")
+        
+        if tool_name == "get_stock_info":
+            # Include all stock details - these are discoverable
+            if "price" in result:
+                observations.append(f"Price: {result['price']}")
+            if "percent_change" in result:
+                observations.append(f"Change: {result['percent_change']}%")
+            if "volume" in result:
+                observations.append(f"Volume: {result['volume']}")
+            if "symbol" in result:
+                observations.append(f"Symbol: {result['symbol']}")
+        
+        elif tool_name == "get_transaction_history":
+            # Result is typically a list of transactions
+            if "transaction_history" in result:
+                transactions = result["transaction_history"]
+            elif isinstance(result, list):
+                transactions = result
+            else:
+                transactions = []
+            
+            if transactions:
+                observations.append(f"Found {len(transactions)} transactions")
+                for i, tx in enumerate(transactions[:5]):  # Limit to first 5
+                    if isinstance(tx, dict):
+                        tx_info = []
+                        if "type" in tx:
+                            tx_info.append(f"Type: {tx['type']}")
+                        if "symbol" in tx:
+                            tx_info.append(f"Symbol: {tx['symbol']}")
+                        if "amount" in tx:
+                            tx_info.append(f"Amount: {tx['amount']}")
+                        if "price" in tx:
+                            tx_info.append(f"Price: {tx['price']}")
+                        if tx_info:
+                            observations.append(f"TX {i+1}: {' | '.join(tx_info)}")
+        
+        elif tool_name == "get_account_info":
+            # Include balance and other account details
+            if "balance" in result:
+                observations.append(f"Balance: {result['balance']}")
+            if "account_id" in result:
+                observations.append(f"Account ID: {result['account_id']}")
+            if "buying_power" in result:
+                observations.append(f"Buying Power: {result['buying_power']}")
+        
+        elif tool_name == "get_order_history":
+            if "order_history" in result:
+                orders = result["order_history"]
+            elif isinstance(result, list):
+                orders = result
+            else:
+                orders = []
+            
+            if orders:
+                observations.append(f"Found {len(orders)} orders")
+                for i, order in enumerate(orders[:5]):
+                    if isinstance(order, dict):
+                        order_info = []
+                        if "order_id" in order:
+                            order_info.append(f"ID: {order['order_id']}")
+                        if "symbol" in order:
+                            order_info.append(f"Symbol: {order['symbol']}")
+                        if "status" in order:
+                            order_info.append(f"Status: {order['status']}")
+                        if order_info:
+                            observations.append(f"Order {i+1}: {' | '.join(order_info)}")
+        
+        else:
+            # Generic handler for other trading tools - include primitive values
+            for key, value in result.items():
+                if isinstance(value, (str, int, float, bool)) and value is not None and key != "error":
+                    observations.append(f"{key}: {value}")
         
         # Set result and context
         observation_dict["result"] = f"Operation {tool_name} completed"
         if observations:
-            observation_dict["context"] = " | ".join(observations[:5])  # Limit to avoid very long strings
+            observation_dict["context"] = " | ".join(observations[:10])  # Increase limit for lists
         else:
             observation_dict["context"] = f"Operation {tool_name} completed successfully"
         
@@ -1060,16 +1230,84 @@ class ObservationGenerator:
             observation_dict["context"] = f"Error in {tool_name}: {result.get('error')}"
             return json.dumps(convert_mpf_to_float(observation_dict))
         
-        # Build context from result
+        # RC-GRPO FIX: Add specific handlers for discovery tools
         observations = []
-        for key, value in result.items():
-            if isinstance(value, (str, int, float, bool)) and value is not None and key != "error":
-                observations.append(f"{key}: {value}")
+        
+        if tool_name == "get_credit_card_balance":
+            # Include balance - critical for discovery
+            if "card_balance" in result:
+                observations.append(f"Balance: {result['card_balance']}")
+            if "balance" in result:
+                observations.append(f"Balance: {result['balance']}")
+        
+        elif tool_name == "get_booking_history":
+            # Handle booking history - can be dict (keyed by booking_id) or list
+            if "booking_history" in result:
+                bookings_data = result["booking_history"]
+            elif isinstance(result, (list, dict)):
+                bookings_data = result
+            else:
+                bookings_data = {}
+            
+            # Convert dict to list format for processing
+            if isinstance(bookings_data, dict):
+                bookings = [(bid, bdata) for bid, bdata in list(bookings_data.items())[:5]]
+                observations.append(f"Found {len(bookings_data)} bookings")
+                for booking_id, booking in bookings:
+                    if isinstance(booking, dict):
+                        booking_info = [f"ID: {booking_id}"]
+                        if "flight_number" in booking:
+                            booking_info.append(f"Flight: {booking['flight_number']}")
+                        if "travel_cost" in booking:
+                            booking_info.append(f"Cost: {booking['travel_cost']}")
+                        if "travel_from" in booking:
+                            booking_info.append(f"From: {booking['travel_from']}")
+                        if "travel_to" in booking:
+                            booking_info.append(f"To: {booking['travel_to']}")
+                        observations.append(f"Booking: {' | '.join(booking_info)}")
+            elif isinstance(bookings_data, list) and bookings_data:
+                observations.append(f"Found {len(bookings_data)} bookings")
+                for i, booking in enumerate(bookings_data[:5]):
+                    if isinstance(booking, dict):
+                        booking_info = []
+                        if "booking_id" in booking:
+                            booking_info.append(f"ID: {booking['booking_id']}")
+                        if "flight_number" in booking:
+                            booking_info.append(f"Flight: {booking['flight_number']}")
+                        if "cost" in booking:
+                            booking_info.append(f"Cost: {booking['cost']}")
+                        if "travel_cost" in booking:
+                            booking_info.append(f"Cost: {booking['travel_cost']}")
+                        if booking_info:
+                            observations.append(f"Booking {i+1}: {' | '.join(booking_info)}")
+        
+        elif tool_name == "retrieve_invoice":
+            # Result may have nested "invoice" key
+            invoice = result.get("invoice", result)
+            if isinstance(invoice, dict):
+                if "booking_id" in invoice:
+                    observations.append(f"Booking ID: {invoice['booking_id']}")
+                if "travel_cost" in invoice:
+                    observations.append(f"Cost: {invoice['travel_cost']}")
+                if "travel_from" in invoice:
+                    observations.append(f"From: {invoice['travel_from']}")
+                if "travel_to" in invoice:
+                    observations.append(f"To: {invoice['travel_to']}")
+                if "travel_class" in invoice:
+                    observations.append(f"Class: {invoice['travel_class']}")
+                if "transaction_id" in invoice:
+                    observations.append(f"Transaction: {invoice['transaction_id']}")
+        
+        else:
+            # Generic handler for other travel tools - include primitive values
+            for key, value in result.items():
+                if isinstance(value, (str, int, float, bool)) and value is not None and key != "error":
+                    observations.append(f"{key}: {value}")
         
         # Set result and context
         observation_dict["result"] = f"Operation {tool_name} completed"
         if observations:
-            observation_dict["context"] = " | ".join(observations[:5])  # Limit to avoid very long strings
+            observation_dict["context"] = " | ".join(observations[:10])  # Increase limit
         else:
             observation_dict["context"] = f"Operation {tool_name} completed successfully"
         
@@ -1235,7 +1473,12 @@ class ObservationGenerator:
             self.last_observation = result
             return result
         
-        # If result is not a dict, convert it
+        # RC-GRPO FIX: Handle list results properly (e.g., get_user_tweets, get_user_tickets)
+        # Don't stringify - wrap in a dict for the formatter to handle
+        if isinstance(result, list):
+            result = {"_list_result": result}
+        
+        # If result is not a dict (and not handled above), convert it
         if not isinstance(result, dict):
             result = {"result": str(result)}
         
