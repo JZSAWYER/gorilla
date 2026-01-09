@@ -53,8 +53,12 @@ from bfcl_eval.env import ToolCallingEnvironment
 # Import shared splitting utilities
 from bfcl_data_split import (
     stratified_split_bfcl_objects,
+    split_bfcl_objects_by_id,
+    split_bfcl_objects_by_id_sequential,
     get_split_output_paths,
-    log_split_statistics
+    log_split_statistics,
+    verify_no_question_overlap,
+    verify_id_based_split
 )
 
 
@@ -1808,6 +1812,21 @@ def main():
         action="store_true",
         help="Disable adding reward conditioning prompt to user messages"
     )
+    parser.add_argument(
+        "--split_method",
+        type=str,
+        choices=["id", "id_sequential", "stratified"],
+        default="id",
+        help="RC-GRPO: Split method for train/test. "
+             "'id' splits by ID with random shuffle (default, 0%% question overlap), "
+             "'id_sequential' splits by ID using sequential ranges, "
+             "'stratified' uses original stratified sampling by API class (may have question overlap)"
+    )
+    parser.add_argument(
+        "--verify_split",
+        action="store_true",
+        help="RC-GRPO: Verify that train/test split has no question overlap (adds verification step)"
+    )
     
     args = parser.parse_args()
     
@@ -1852,21 +1871,44 @@ def main():
     if args.split:
         logger.info("=" * 60)
         logger.info(f"Train/test splitting enabled (ratio={args.train_ratio}, seed={args.seed})")
+        logger.info(f"RC-GRPO: Using split method: {args.split_method}")
         
-        # Split the BFCL objects
-        train_objects, test_objects = stratified_split_bfcl_objects(
-            bfcl_objects,
-            train_ratio=args.train_ratio,
-            seed=args.seed
-        )
+        # RC-GRPO: Choose split method
+        if args.split_method == "id":
+            # ID-based split with random shuffle (recommended for 0% question overlap)
+            train_objects, test_objects = split_bfcl_objects_by_id(
+                bfcl_objects,
+                train_ratio=args.train_ratio,
+                seed=args.seed
+            )
+        elif args.split_method == "id_sequential":
+            # ID-based split with sequential ranges
+            train_objects, test_objects = split_bfcl_objects_by_id_sequential(
+                bfcl_objects,
+                train_ratio=args.train_ratio
+            )
+        else:  # stratified
+            # Original stratified sampling (may have question overlap)
+            train_objects, test_objects = stratified_split_bfcl_objects(
+                bfcl_objects,
+                train_ratio=args.train_ratio,
+                seed=args.seed
+            )
         
         # Log split statistics
         log_split_statistics(train_objects, test_objects)
+        
+        # RC-GRPO: Optional verification of split quality
+        if args.verify_split:
+            logger.info("RC-GRPO: Verifying split quality...")
+            verify_id_based_split(train_objects, test_objects)
+            verify_no_question_overlap(train_objects, test_objects)
         
         # Get output paths for train and test
         train_path, test_path = get_split_output_paths(output_path)
         
         # Process train split
+        # RC-GRPO: Train data should NOT have reward prompt (for standard SFT)
         logger.info("=" * 60)
         logger.info(f"Processing TRAIN split ({len(train_objects)} objects)...")
         train_stats = {
@@ -1877,10 +1919,11 @@ def main():
         train_records = process_bfcl_objects(
             train_objects, tool_docs, train_stats,
             use_real_observations=args.use_real_observations, mode=args.mode,
-            add_reward_prompt=not args.no_reward_prompt
+            add_reward_prompt=False if args.no_reward_prompt else True
         )
         
         # Process test split
+        # RC-GRPO: Test data SHOULD have high reward prompt (for reward-conditioned inference)
         logger.info("=" * 60)
         logger.info(f"Processing TEST split ({len(test_objects)} objects)...")
         test_stats = {
@@ -1891,7 +1934,7 @@ def main():
         test_records = process_bfcl_objects(
             test_objects, tool_docs, test_stats,
             use_real_observations=args.use_real_observations, mode=args.mode,
-            add_reward_prompt=not args.no_reward_prompt
+            add_reward_prompt=True  # Always add high reward prompt for test
         )
         
         # Write train output
