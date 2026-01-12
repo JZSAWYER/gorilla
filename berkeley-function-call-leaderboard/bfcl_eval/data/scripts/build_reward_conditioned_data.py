@@ -229,13 +229,13 @@ def main():
     parser.add_argument(
         "--rl-trajectories",
         type=str,
-        default="../generated/rl/rl_trajectories.json",
+        default="/inspire/hdd/project/chemicalreaction/dijixiu-CZXS25220051/projects/gorilla/berkeley-function-call-leaderboard/bfcl_eval/data/generated/llama3-8b-instruct/rl/rl_trajectories.json",
         help="Path to RL trajectories file"
     )
     parser.add_argument(
         "--reward-results",
         type=str,
-        default="../generated/evaluation/trajectory_reward_results.json",
+        default="../generated/evaluation/llama/trajectory_reward_results.json",
         help="Path to trajectory reward results file"
     )
     parser.add_argument(
@@ -247,7 +247,7 @@ def main():
     parser.add_argument(
         "--output",
         type=str,
-        default="../generated/rl/rl_conditioned_combined.json",
+        default="../generated/llama3-8b-instruct/rl/rl_conditioned_combined.json",
         help="Path to output combined file"
     )
     parser.add_argument(
