@@ -194,9 +194,10 @@ def create_expert_trajectory(task, ground_truth, task_id, source_file, add_rewar
             })
         
         # Add assistant message with tool calls
+        # Use empty string instead of None for content (LLaMA-Factory compatibility)
         messages.append({
             "role": "assistant",
-            "content": None,
+            "content": "",
             "tool_calls": tool_calls
         })
         
@@ -212,7 +213,7 @@ def create_expert_trajectory(task, ground_truth, task_id, source_file, add_rewar
     done_id = f"call_{tool_call_id_counter}"
     messages.append({
         "role": "assistant",
-        "content": None,
+        "content": "",  # Use empty string instead of None (LLaMA-Factory compatibility)
         "tool_calls": [{
             "id": done_id,
             "type": "function",
@@ -384,7 +385,7 @@ def main():
                     tool_call_id_counter += 1
                     messages.append({
                         "role": "assistant",
-                        "content": None,
+                        "content": "",  # Use empty string instead of None (LLaMA-Factory compatibility)
                         "tool_calls": [{
                             "id": tc_id,
                             "type": "function",
