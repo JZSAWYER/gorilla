@@ -935,19 +935,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_102",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -1065,19 +1053,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_185",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -1293,19 +1269,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_157",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -1718,19 +1682,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_56",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -2282,19 +2234,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_129",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -2477,19 +2417,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_63",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -2638,19 +2566,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_116",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -3287,19 +3203,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_176",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -3429,19 +3333,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_138",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -3910,19 +3802,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_36",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -4174,19 +4054,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_47",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -4272,19 +4140,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_78",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -4370,19 +4226,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_169",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -4593,19 +4437,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_134",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -4979,19 +4811,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_183",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -5535,19 +5355,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_130",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -5723,19 +5531,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_44",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -5960,19 +5756,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_132",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -6096,19 +5880,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_136",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -6468,19 +6240,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_188",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -7207,19 +6967,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_110",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -7529,19 +7277,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_74",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -7665,19 +7401,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_173",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -7907,19 +7631,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_64",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -8382,19 +8094,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_2",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -8545,19 +8245,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_31",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -8812,19 +8500,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_39",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -8987,19 +8663,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_89",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -9272,19 +8936,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_9",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -9463,19 +9115,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_150",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -9605,19 +9245,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_191",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -9806,19 +9434,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_90",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -9987,19 +9603,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_174",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -10136,19 +9740,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_66",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -10453,19 +10045,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_191",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -10743,19 +10323,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_101",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -10942,19 +10510,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_50",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -11340,19 +10896,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_158",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -12254,19 +11798,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_92",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -12643,19 +12175,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_79",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -12805,19 +12325,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_180",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -12973,19 +12481,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_178",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -13090,19 +12586,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_29",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -13226,19 +12710,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_172",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -13362,19 +12834,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_173",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -13511,19 +12971,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_24",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -13628,19 +13076,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_21",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -13745,19 +13181,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_12",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -13926,19 +13350,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_174",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -14094,19 +13506,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_15",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -14269,19 +13669,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_144",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -14854,19 +14242,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_105",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -15010,19 +14386,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_88",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -15233,19 +14597,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_44",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -15350,19 +14702,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_12",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -15655,19 +14995,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_1",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -16096,19 +15424,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_177",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -16219,19 +15535,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_140",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -16317,19 +15621,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_13",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -16396,19 +15688,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_50",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -16564,19 +15844,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_95",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -16938,19 +16206,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_99",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -17229,19 +16485,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_21",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -17740,19 +16984,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_0",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -17877,19 +17109,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_74",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -18452,19 +17672,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_131",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -18588,19 +17796,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_49",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -18769,19 +17965,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_2",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -19286,19 +18470,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_80",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -19435,19 +18607,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_1",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -19632,19 +18792,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_137",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -20185,19 +19333,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_139",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0
@@ -20327,19 +19463,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_191",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -20469,19 +19593,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_138",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -20769,19 +19881,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_131",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -20887,19 +19987,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_198",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -21050,19 +20138,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_param_31",
     "source_file": "BFCL_v4_multi_turn_miss_param.json",
     "final_reward": 1.0
@@ -21148,19 +20224,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_base_150",
     "source_file": "BFCL_v4_multi_turn_base.json",
     "final_reward": 1.0
@@ -21392,19 +20456,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_long_context_36",
     "source_file": "BFCL_v4_multi_turn_long_context.json",
     "final_reward": 1.0
@@ -21693,19 +20745,7 @@
         "content": "{\"status\": \"completed\"}"
       }
     ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "done",
-          "description": "Call this function when all tasks are completed.",
-          "parameters": {
-            "type": "object",
-            "properties": {}
-          }
-        }
-      }
-    ],
+    "tools": "[{\"type\": \"function\", \"function\": {\"name\": \"done\", \"description\": \"Call this function when all tasks are completed.\", \"parameters\": {\"type\": \"object\", \"properties\": {}}}}]",
     "task_id": "multi_turn_miss_func_51",
     "source_file": "BFCL_v4_multi_turn_miss_func.json",
     "final_reward": 1.0

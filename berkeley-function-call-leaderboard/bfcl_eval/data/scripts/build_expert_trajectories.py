@@ -242,7 +242,7 @@ def create_expert_trajectory(task, ground_truth, task_id, source_file, add_rewar
     
     return {
         "messages": messages,
-        "tools": tools,
+        "tools": json.dumps(tools, ensure_ascii=False),  # Serialize to JSON string for consistency
         "task_id": task_id,
         "source_file": source_file,
         "final_reward": 1.0 if is_success else 0.0
@@ -403,9 +403,18 @@ def main():
                     "content": content
                 })
         
+        # Ensure tools is JSON string for consistency
+        tools_data = traj.get('tools', [])
+        if isinstance(tools_data, list):
+            tools_str = json.dumps(tools_data, ensure_ascii=False)
+        elif isinstance(tools_data, str):
+            tools_str = tools_data
+        else:
+            tools_str = "[]"
+        
         failure_item = {
             "messages": messages,
-            "tools": traj.get('tools', []),
+            "tools": tools_str,  # JSON string
             "task_id": task_id,
             "source_file": "rl_trajectory",
             "final_reward": reward
