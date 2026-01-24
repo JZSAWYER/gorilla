@@ -377,7 +377,8 @@ def main():
             elif role == 'gpt':
                 if content.startswith("I understand"):
                     continue
-                messages.append({"role": "assistant", "content": content})
+                # Always include tool_calls key (empty list) for HuggingFace compatibility
+                messages.append({"role": "assistant", "content": content, "tool_calls": []})
             elif role == 'function_call':
                 try:
                     func_data = json.loads(content)
@@ -396,7 +397,8 @@ def main():
                         }]
                     })
                 except:
-                    messages.append({"role": "assistant", "content": content})
+                    # Always include tool_calls key (empty list) for HuggingFace compatibility
+                    messages.append({"role": "assistant", "content": content, "tool_calls": []})
             elif role == 'observation':
                 messages.append({
                     "role": "tool",
